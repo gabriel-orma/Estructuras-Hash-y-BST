@@ -137,4 +137,13 @@ struct BST {
     void printInorder() { inorder(root); cout << "\n"; }
     void printPreorder() { preorder(root); cout << "\n"; }
     void printPostorder() { postorder(root); cout << "\n"; }
+
+    int height(Node* x) {
+        if (x == nullptr) return -1;
+        int hl = height(x->left);
+        int hr = height(x->right);
+        return 1 + (hl > hr ? hl : hr);
+    }
+
+    int height() { return height(root); }
 };
