@@ -1,24 +1,19 @@
-#include <iostream>
 #include <string>
-#include <chrono>
-#include <cstdint>
 using namespace std;
 
-const uint64_t SEED = chrono::steady_clock::now().time_since_epoch().count();
-
-uint64_t splitmix64(uint64_t x) {
+unsigned long long mix(unsigned long long x) {
     x += 0x9e3779b97f4a7c15ULL;
     x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9ULL;
     x = (x ^ (x >> 27)) * 0x94d049bb133111ebULL;
     return x ^ (x >> 31);
 }
 
-uint64_t hashKey(long long x) { return splitmix64(x + SEED); }
+unsigned long long hashKey(long long x) { return mix(x); }
 
-uint64_t hashKey(const string& s) {
-    uint64_t h = 0;
+unsigned long long hashKey(const string& s) {
+    unsigned long long h = 0;
     for (char c : s) h = h * 131 + c;
-    return splitmix64(h + SEED);
+    return mix(h);
 }
 
 template <class K, class V>
@@ -108,14 +103,5 @@ struct HashMap {
             prev = t;
             t = t->next;
         }
-    }
-
-    int size() { return n; }
-
-    template <class F>
-    void forEach(F f) {
-        for (int i = 0; i < m; i++)
-            for (Node* t = A[i]; t != nullptr; t = t->next)
-                f(t->key, t->value);
     }
 };
